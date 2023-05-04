@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div id="content">
+    </div>
+    <input type="text" id="input">
+    <button type="button" id="btn">送出</button>
+
+    <script>
+      const ws = new WebSocket('ws://localhost:8080');
+
+      // Connection opened
+      ws.addEventListener("open", (event) => {
+        // ws.send("Hello Server!");
+      });
+
+      // Listen for messages
+      ws.addEventListener("message", (event) => {
+        console.log("Message from server ", JSON.parse(event.data));
+        const content = document.querySelector('#content');
+        const data = JSON.parse(event.data);
+        content.innerHTML = data.map((text) => `<p>${text}</p>`).join('');
+      });
+
+      document.querySelector('#btn').addEventListener('click', () => {
+        const value = document.querySelector('#input').value;
+        ws.send(value);
+      });
+    </script>
+  </body>
+
+</html>
